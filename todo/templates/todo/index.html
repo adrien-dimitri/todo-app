@@ -1,0 +1,68 @@
+{% extends 'todo/main.html' %}
+{% block content %}
+
+<div class="header-bar">
+    <div>
+        <h1>Hello {{request.user|title}}</h1>
+        <h3 style="margin: 0">You have <i>{{incomplete_tasks|length}}</i> incomplete task{{incomplete_tasks|pluralize}}</h3>
+    </div>
+
+
+
+    {% if request.user.is_authenticated %}
+        <a href="{% url 'todo:logout' %}">Logout</a>
+    {% else %}
+        <a href="{% url 'todo:login' %}">Login</a>
+    {% endif %}
+</div>
+
+<div id="search-add-wrapper">
+    <form action="" method="get" style="margin-top: 20px; display: flex;">
+        <input type="text" name="search_area" value="{{search_input}}">
+        <input class="button" type="submit" value="Search">
+    </form>
+    <a id="add-link" href="{% url 'todo:create' %}">&#x2b;</a>
+
+</div>
+
+<div class="task-items-wrapper">
+    {% if task_list %}
+        {% for task_name in task_list %}
+            <div class="task-wrapper">
+                {% if task_name.complete %}
+                    <div class="task-title">
+                        <div class="task-complete-icon"></div>
+                        <i><s>{{task_name|truncatechars:25}}</s></i>
+                        <div style="display: inline; margin-left:15px; color: lightgray;">
+                            {{task_name.description|truncatechars:12}}
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="task-title">
+                        <div class="task-incomplete-icon"></div>
+                        {{task_name|truncatechars:25}}
+                        <div style="display: inline; margin-left:15px; color: lightgray;">
+                            {{task_name.description|truncatechars:12}}
+                        </div>
+                    </div>
+
+                {% endif %}
+                <div>
+                    <a class="edit-link" href="{% url 'todo:edit' task_name.id %}">&#9998;</a>
+                    <a class="delete-link" href="{% url 'todo:delete' task_name.id %}">&#215;</a>
+                </div>
+            </div>
+            {% endfor %}
+
+
+    {% else %}
+        <p>Nothing to do</p>
+    {% endif %}
+</div>
+
+{% endblock content %}
+
+
+
+
+
